@@ -49,5 +49,7 @@
     }else if($path == '/logout'){
         session_destroy();
         header('Location: /blog');
+    }else if($path == '/uploadAvatar'){
+        exit(User::uploadAvatar());
     }
     require_once('view/template.php');

@@ -26,6 +26,7 @@
                 $_SESSION['name'] = $row['name'];
                 $_SESSION['email'] = $row['email'];
                 $_SESSION['lastname'] = $row['lastname'];
+                $_SESSION['avatar'] = $row['avatar'];
                 $_SESSION['id'] = $row['id'];
                 header('location: /profile');
             }else{
@@ -38,16 +39,35 @@
             $lastname = $_SESSION['lastname'];
             $email = $_SESSION['email'];
             $id = $_SESSION['id'];
+            $avatar = $_SESSION['avatar'];
             $user = [
                 'name'=>$name,
                 'lastname'=>$lastname,
                 'id'=>$id,
-                'email'=>$email
+                'email'=>$email,
+                'avatar' =>$avatar
             ];
             return json_encode($user);
         }
 
         public static function isAuth(){
             return !empty($_SESSION['id']);
+        }
+
+        public static function uploadAvatar(){
+            global $mysqli;
+            $userAvatar = $_FILES['userAvatar'];
+            $ext = explode('.', $userAvatar['name'])[count(explode('.', $userAvatar['name']))-1];
+            if($ext != 'jpg') exit('ERROR!!!');
+            $fileName = microtime().$userAvatar['name'];
+            if(move_uploaded_file($userAvatar['tmp_name'], 'img/'.$fileName)){
+                $userId = $_SESSION['id'];
+                $avatarUri = '/img/'.$fileName;
+                $mysqli->query("UPDATE `users` SET `avatar`='$avatarUri' WHERE id = '$userId'");
+                $_SESSION['avatar'] = $avatarUri;
+                header('Location: /profile');
+            }else{
+                echo "ОшибКА!";
+            }
         }
     }
