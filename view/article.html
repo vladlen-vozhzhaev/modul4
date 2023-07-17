@@ -1,0 +1,32 @@
+<script>
+  let mainContainer = document.getElementById('mainContainer');
+  let path = location.pathname;
+  let articleId = path.split('/')[2];
+  let html = "";
+  fetch('/isAuth')
+    .then(function (response){return response.text()})
+    .then(function (result){
+       if(result == "1"){
+           console.log("Авторизован");
+           html += `
+                <a class="me-3" href="/editArticle/${articleId}">[редактировать]</a>
+                <a href="/deleteArticle/${articleId}">[удалить]</a>
+`           ;
+       }else{
+           console.log("Не авторизован");
+       }
+    });
+
+  fetch('/getArticleById/'+articleId)
+    .then(function (response){return response.json()})
+    .then(function (result){
+      console.log(result);
+      html += `
+                <h2>${result.title}</h2>
+                <p>${result.article}</p>
+                <p>Автор: ${result.author}</p>
+                <p>Дата создания: ${result.created_at}</p>
+            `;
+      mainContainer.innerHTML = html;
+    })
+</script>

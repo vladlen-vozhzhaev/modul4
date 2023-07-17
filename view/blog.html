@@ -1,0 +1,26 @@
+<script>
+  let mainContainer = document.getElementById('mainContainer');
+  fetch('/getArticles')
+    .then(function (response){return response.json()})
+    .then(function (result){
+        console.log(result);
+        let html = "";
+        for (let i = 0; i < result.length; i++) {
+            let article = result[i];
+            html += `
+                <div class="post-preview">
+                        <a href="/blog/${article.id}">
+                            <h2 class="post-title">${article.title}</h2>
+                            <h3 class="post-subtitle">${article.article}</h3>
+                        </a>
+                        <p class="post-meta">
+                            Опубликовал
+                            <a href="#!">${article.author}</a>
+                        </p>
+                </div>
+                <hr class="my-4" />
+            `;
+        }
+        mainContainer.innerHTML = html;
+    })
+</script>
